@@ -62,12 +62,11 @@ public class AnswerServiceImpl implements AnswerService {
     public boolean isRightAnswer(List<Integer> answeredQuestion, List<Question> questionList, int questionNumber) {
         List<Answer> prevAnswer = getPreviousAnswers(questionList, questionNumber);
         List<Integer> rightIndexesList = getListOfIndexesOfRightAnswers(prevAnswer);
-        if(answeredQuestion == null && rightIndexesList.isEmpty())
+        if(answeredQuestion == null && rightIndexesList.isEmpty()) {
             return true;
-        else if(answeredQuestion == null && !rightIndexesList.isEmpty()) {
+        } else if(answeredQuestion == null && !rightIndexesList.isEmpty()) {
             return false;
-        }
-        else {
+        } else {
             return answeredQuestion.equals(rightIndexesList);
         }
     }

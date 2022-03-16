@@ -86,6 +86,7 @@ public class StatisticServiceImpl implements StatisticService {
         List<TestStatistic> testStatisticList = getTestStatisticsByUser(user);
         return new UserStatistics(user.getFirstName(),user.getLastName(),user.getLogin(),testStatisticList);
     }
+    
     @Transactional
     @Override
     public void removeStatisticByUserId(int userId){
@@ -120,59 +121,55 @@ public class StatisticServiceImpl implements StatisticService {
         List<Test> testLists = topic.getTestList();
         List<TestStatistic> testStatistics = new ArrayList<>();
 
-        for (Test test : testLists) {
-
-            List<Question> questionList = test.getQuestions();
-            List<QuestionStatistic> questionStatistics = new ArrayList<>();
-            int numberOfAttempts = 0;
-            int questionAvg = 0;
-            int testSumAvg = 0;
-            for (Question question : questionList) {
-
-                List<Statistic> statisticList = getStatisticByQuestion(question);
-                numberOfAttempts = statisticList.size();
-                int rightAnswers = numberOfRightAnswers(statisticList);
-
-                if (numberOfAttempts != 0)
-                    questionAvg = calculateAvg(numberOfAttempts, rightAnswers);
-
-                testSumAvg += questionAvg;
-                //questionStatistics.add(new QuestionStatistic(numberOfAttempts, questionAvg));
-                questionStatistics.add(new QuestionStatistic(question.getDescription(), numberOfAttempts, questionAvg));
-            }
-            Collections.sort(questionStatistics);
-
-            int testAverage = calculateTestAverage(testSumAvg, questionStatistics.size());
-            testStatistics.add(new TestStatistic(test.getName(), numberOfAttempts, testAverage, questionStatistics));
-        }
+        setTestLists(testLists, testStatistics);
         Collections.sort(testStatistics);
         return testStatistics;
     }
 
+    private void setTestLists(List<Test> testLists, List<TestStatistic> testStatistics) {
+        for (Test test : testLists) {
+
+            List<Question> questionList = test.getQuestions();
+            List<QuestionStatistic> questionStatistics = new ArrayList<>();
+            QuestionStatisticAttempts statisticAttempts = new QuestionStatisticAttempts(0,0,0);
+            setQuestionStatistics(questionList, questionStatistics,statisticAttempts);
+            Collections.sort(questionStatistics);
+
+            int testAverage = calculateTestAverage(statisticAttempts.getTestSumAvg(), questionStatistics.size());
+            testStatistics.add(new TestStatistic(test.getName(), statisticAttempts.getNumberOfAttempts(),
+                    testAverage, questionStatistics));
+        }
+    }
+
+    private void setQuestionStatistics(List<Question> questionList, List<QuestionStatistic> questionStatistics,
+                                   QuestionStatisticAttempts statisticAttempts) {
+        for (Question question : questionList) {
+
+            List<Statistic> statisticList = getStatisticByQuestion(question);
+            statisticAttempts.setNumberOfAttempts(statisticList.size());
+            int rightAnswers = numberOfRightAnswers(statisticList);
+            if (statisticAttempts.getNumberOfAttempts() != 0)
+                statisticAttempts.setQuestionAvg(calculateAvg(statisticAttempts.getNumberOfAttempts(), rightAnswers));
+
+            statisticAttempts.setTestSumAvg(statisticAttempts.getTestSumAvg()+statisticAttempts.getQuestionAvg());
+            questionStatistics.add(new QuestionStatistic(question.getDescription(),
+                    statisticAttempts.getNumberOfAttempts(), statisticAttempts.getQuestionAvg()));
+        }
+    }
+
     private int numberOfRightAnswers(List<Statistic> statisticList){
         int rightAnswer = 0;
+        rightAnswer = getRightAnswer(statisticList, rightAnswer);
+        return rightAnswer;
+    }
+
+    private int getRightAnswer(List<Statistic> statisticList, int rightAnswer) {
         for (Statistic statistic : statisticList) {
             if (statistic.isCorrect())
                 rightAnswer++;
         }
         return rightAnswer;
     }
-
-//    @Transactional
-//    public List<TopicStatisticByTests> getListTopicStaticByTests(){
-//
-//        List<Topic> topics = topicService.findAll();
-//        List<TopicStatisticByTests> topicStatisticByTests = new ArrayList<>();
-//
-//        for (Topic topic : topics) {
-//            List<TestStatistic> testStatistics = getTestStatistics(topic);
-//
-//            topicStatisticByTests.add(new TopicStatisticByTests(topic.getName(),
-//                    topic.getDescription(),testStatistics));
-//        }
-//
-//        return topicStatisticByTests;
-//    }
 
     private int calculateTestAverage(int testSumAvg, int questionStatisticsSize) {
         if (questionStatisticsSize != 0)
@@ -212,11 +209,7 @@ public class StatisticServiceImpl implements StatisticService {
             double countOfRightAnswers = 0;
             TestStatisticByDate testStatisticByDate = new TestStatisticByDate();
             testStatisticByDate.setTestName(values.get(0).getQuestion().getTest().getName());
-            for (Statistic st : values){
-                if(st.isCorrect()){
-                    countOfRightAnswers++;
-                }
-            }
+            countOfRightAnswers = getCountOfRightAnswers(values, countOfRightAnswers);
 
             int avg = (int) ((countOfRightAnswers / values.size()) * 100);
             testStatisticByDate.setAvg(avg);
@@ -225,8 +218,22 @@ public class StatisticServiceImpl implements StatisticService {
         return testStatisticsByDate;
     }
 
+    private double getCountOfRightAnswers(ArrayList<Statistic> values, double countOfRightAnswers) {
+        for (Statistic st : values){
+            if(st.isCorrect()){
+                countOfRightAnswers++;
+            }
+        }
+        return countOfRightAnswers;
+    }
+
     private Map<Date, ArrayList<Statistic>> getStatisticsByDate(List<Statistic> statistics) {
         Map<Date, ArrayList<Statistic>> statisticsByDate = new HashMap<>();
+        setStatisticsByDate(statistics, statisticsByDate);
+        return statisticsByDate;
+    }
+
+    private void setStatisticsByDate(List<Statistic> statistics, Map<Date, ArrayList<Statistic>> statisticsByDate) {
         for (Statistic st : statistics){
             if(!statisticsByDate.containsKey(st.getDate())){
                 ArrayList<Statistic> statisticList = new ArrayList<>();
@@ -236,6 +243,5 @@ public class StatisticServiceImpl implements StatisticService {
                 statisticsByDate.get(st.getDate()).add(st);
             }
         }
-        return statisticsByDate;
     }
 }
