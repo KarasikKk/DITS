@@ -26,14 +26,6 @@ public class SecurityController {
     private final UserService userService;
     private final TopicService topicService;
 
-    @GetMapping("/admin/user-editor")
-    public String adminPage(HttpSession session,ModelMap model){
-        session.setAttribute("user",userService.getUserByLogin(getPrincipal()));
-        model.addAttribute("title","User editor");
-        return "admin/user-editor";
-    }
-
-
     @GetMapping("/user/chooseTest")
     public String userPage(HttpSession session,ModelMap model) {
         User user = userService.getUserByLogin(getPrincipal());
@@ -69,7 +61,6 @@ public class SecurityController {
 
         return "redirect:/login?logout";
     }
-
 
     private static String getPrincipal(){
         String userName;

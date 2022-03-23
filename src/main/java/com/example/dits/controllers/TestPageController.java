@@ -88,7 +88,7 @@ public class TestPageController {
         checkIfResultPage(questions, questionNumber, isCorrect, user, statisticList);
         statisticService.saveStatisticsToDB(statisticList);
         model.addAttribute("title","Result");
-        return "user/resultPageFinal";
+        return "redirect:/user/chooseTest";
     }
 
     private void checkIfResultPage(List<Question> questions, int questionNumber, boolean isCorrect, User user, List<Statistic> statisticList) {

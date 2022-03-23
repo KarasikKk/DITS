@@ -7,16 +7,16 @@ import com.example.dits.entity.Test;
 import com.example.dits.entity.Topic;
 import com.example.dits.mapper.QuestionMapper;
 import com.example.dits.mapper.TestMapper;
-import com.example.dits.service.QuestionService;
-import com.example.dits.service.RoleService;
-import com.example.dits.service.TestService;
-import com.example.dits.service.TopicService;
+import com.example.dits.service.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,14 +31,29 @@ public class AdminTestController {
     private final TestMapper testMapper;
     private final QuestionMapper questionMapper;
     private final RoleService roleService;
+    private final UserService userService;
 
     @GetMapping("/testBuilder")
-    public String getTopics(ModelMap model) {
+    public String getTopics(ModelMap model, HttpSession session) {
+        session.setAttribute("user",userService.getUserByLogin(getPrincipal()));
         List<Topic> topicList = topicService.findAll();
         List<TopicDTO> topicDTOList = topicList.stream().map(this::convertToDTO).collect(Collectors.toList());
         model.addAttribute("topicLists",topicDTOList);
         model.addAttribute("title","Test editor");
         return "admin/test-editor";
+    }
+
+    private static String getPrincipal(){
+        String userName;
+        Object principal = SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        if(principal instanceof UserDetails){
+            userName = ((UserDetails) principal).getUsername();
+        }
+        else
+            userName = principal.toString();
+        return userName;
     }
 
     @ResponseBody
