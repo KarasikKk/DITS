@@ -5,7 +5,6 @@ import com.example.dits.entity.User;
 import com.example.dits.service.TopicService;
 import com.example.dits.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,7 +29,6 @@ public class SecurityController {
     @GetMapping("/admin/user-editor")
     public String adminPage(HttpSession session,ModelMap model){
         session.setAttribute("user",userService.getUserByLogin(getPrincipal()));
-        session.setAttribute("users", userService.findAll());
         model.addAttribute("title","User editor");
         return "admin/user-editor";
     }

@@ -17,7 +17,6 @@ public class StatisticServiceImpl implements StatisticService {
 
     private final StatisticRepository repository;
     private final TopicService topicService;
-    private static final int initValue = 0;
 
     @Transactional
     public void saveMapOfStat(Map<String, Statistic> map, String endTest){
@@ -47,11 +46,6 @@ public class StatisticServiceImpl implements StatisticService {
         }
     }
 
-//    @Override
-//    public int calculateRightAnswers(List<Statistic> statistics) {
-//        return (int) statistics.stream().filter(Statistic::isCorrect).count();
-//    }
-
     @Transactional
     public void create(Statistic statistic) {
         repository.save(statistic);
@@ -80,12 +74,6 @@ public class StatisticServiceImpl implements StatisticService {
     public List<Statistic> findAll() {
         return repository.findAll();
     }
-
-//    @Transactional
-//    public UserStatistics getUserStatistics(User user){
-//        List<TestStatistic> testStatisticList = getTestStatisticsByUser(user);
-//        return new UserStatistics(user.getFirstName(),user.getLastName(),user.getLogin(),testStatisticList);
-//    }
     
     @Transactional
     @Override
@@ -97,18 +85,6 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public void deleteAll(){
         repository.deleteAll();
-    }
-
-    private List<TestStatistic> getTestStatisticsByUser(User user) {
-        List<Statistic> statistics = getStatisticsByUser(user);
-        Map<Date, ArrayList<Statistic>> statisticByDate  = getStatisticsByDate(statistics);
-
-        List<TestStatisticByDate> testStatisticsByDate = getTestStatisticByDate(statisticByDate);
-        Map<String, TestStatistic> statisticByTestName = getMapTestStatisticsByTestName(testStatisticsByDate);
-        List<TestStatistic> statisticList = new ArrayList<>(statisticByTestName.values());
-        Comparator<TestStatistic> comp = Comparator.comparingInt(TestStatistic::getAvgProc);
-        statisticList.sort(comp);
-        return statisticList;
     }
 
     @Transactional
@@ -180,68 +156,5 @@ public class StatisticServiceImpl implements StatisticService {
 
     private int calculateAvg(int count, double rightAnswer) {
         return (int) (rightAnswer / count * 100);
-    }
-
-    private Map<String, TestStatistic> getMapTestStatisticsByTestName(List<TestStatisticByDate> testStatisticsByDate) {
-        Map<String, TestStatistic> statisticByName = new HashMap<>();
-        for (TestStatisticByDate st : testStatisticsByDate){
-            if (!statisticByName.containsKey(st.getTestName())) {
-                TestStatistic testStatistic = new TestStatistic(st.getTestName(),initValue + 1,st.getAvg());
-                statisticByName.put(st.getTestName(), testStatistic);
-            }
-            else{
-                TestStatistic testStatistic = statisticByName.get(st.getTestName());
-                double sumOfAvg = testStatistic.getAvgProc() * testStatistic.getCount();
-                testStatistic.setCount(testStatistic.getCount() + 1);
-                int finishAvg =(int)((sumOfAvg + st.getAvg()) / testStatistic.getCount());
-                testStatistic.setAvgProc(finishAvg);
-            }
-        }
-        return statisticByName;
-    }
-
-
-    @Transactional
-    List<TestStatisticByDate> getTestStatisticByDate(Map<Date, ArrayList<Statistic>> statisticByDate) {
-        List<TestStatisticByDate> testStatisticsByDate = new ArrayList<>();
-
-        for (ArrayList<Statistic> values : statisticByDate.values()){
-            double countOfRightAnswers = 0;
-            TestStatisticByDate testStatisticByDate = new TestStatisticByDate();
-            testStatisticByDate.setTestName(values.get(0).getQuestion().getTest().getName());
-            countOfRightAnswers = getCountOfRightAnswers(values, countOfRightAnswers);
-
-            int avg = (int) ((countOfRightAnswers / values.size()) * 100);
-            testStatisticByDate.setAvg(avg);
-            testStatisticsByDate.add(testStatisticByDate);
-        }
-        return testStatisticsByDate;
-    }
-
-    private double getCountOfRightAnswers(ArrayList<Statistic> values, double countOfRightAnswers) {
-        for (Statistic st : values){
-            if(st.isCorrect()){
-                countOfRightAnswers++;
-            }
-        }
-        return countOfRightAnswers;
-    }
-
-    private Map<Date, ArrayList<Statistic>> getStatisticsByDate(List<Statistic> statistics) {
-        Map<Date, ArrayList<Statistic>> statisticsByDate = new HashMap<>();
-        setStatisticsByDate(statistics, statisticsByDate);
-        return statisticsByDate;
-    }
-
-    private void setStatisticsByDate(List<Statistic> statistics, Map<Date, ArrayList<Statistic>> statisticsByDate) {
-        for (Statistic st : statistics){
-            if(!statisticsByDate.containsKey(st.getDate())){
-                ArrayList<Statistic> statisticList = new ArrayList<>();
-                statisticsByDate.put(st.getDate(),statisticList);
-                statisticList.add(st);
-            } else{
-                statisticsByDate.get(st.getDate()).add(st);
-            }
-        }
     }
 }

@@ -5,7 +5,6 @@ import com.example.dits.entity.Answer;
 import com.example.dits.entity.Question;
 import com.example.dits.service.AnswerService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.math3.util.Precision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,11 +69,6 @@ public class AnswerServiceImpl implements AnswerService {
             return answeredQuestion.equals(rightIndexesList);
         }
     }
-
-//    @Override
-//    public double countPercentsOfRightAnswers(double countOfRightAnswers, double questionSize) {
-//        return Precision.round((countOfRightAnswers / questionSize) * 100, 0);
-//    }
 
     private List<Integer> getListOfIndexesOfRightAnswers(List<Answer> prevAnswer) {
         List<Integer> rightAnswers = new ArrayList<>();

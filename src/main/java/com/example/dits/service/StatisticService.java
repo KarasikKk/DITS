@@ -15,7 +15,6 @@ public interface StatisticService {
     List<Statistic> getStatisticsByUser(User user);
     List<Statistic> getStatisticByQuestion(Question question);
     void saveStatisticsToDB(List<Statistic> statistics);
-    //int calculateRightAnswers(List<Statistic> statistics);
     void removeStatisticByUserId(int userid);
     void deleteAll();
 }

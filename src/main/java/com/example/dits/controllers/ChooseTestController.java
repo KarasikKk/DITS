@@ -6,13 +6,11 @@ import com.example.dits.service.TestService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
