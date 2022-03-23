@@ -47,10 +47,10 @@ public class StatisticServiceImpl implements StatisticService {
         }
     }
 
-    @Override
-    public int calculateRightAnswers(List<Statistic> statistics) {
-        return (int) statistics.stream().filter(Statistic::isCorrect).count();
-    }
+//    @Override
+//    public int calculateRightAnswers(List<Statistic> statistics) {
+//        return (int) statistics.stream().filter(Statistic::isCorrect).count();
+//    }
 
     @Transactional
     public void create(Statistic statistic) {
@@ -81,11 +81,11 @@ public class StatisticServiceImpl implements StatisticService {
         return repository.findAll();
     }
 
-    @Transactional
-    public UserStatistics getUserStatistics(User user){
-        List<TestStatistic> testStatisticList = getTestStatisticsByUser(user);
-        return new UserStatistics(user.getFirstName(),user.getLastName(),user.getLogin(),testStatisticList);
-    }
+//    @Transactional
+//    public UserStatistics getUserStatistics(User user){
+//        List<TestStatistic> testStatisticList = getTestStatisticsByUser(user);
+//        return new UserStatistics(user.getFirstName(),user.getLastName(),user.getLogin(),testStatisticList);
+//    }
     
     @Transactional
     @Override

@@ -20,13 +20,13 @@
                         </div>
                     </div>
                     <div class="row grid__item" id="resultTableBody">
-                        <div class="container test" th:each="stat,iter : ${statisticList}">
+                        <div class="container test">
                             <div class="row result-row" data-bs-toggle="collapse" href="#test">
-                                <div class="col-1 text-start d-none d-md-block" th:text="${iter.index+1}"></div>
-                                <div class="col-md-8 col-sm-7 text-start" th:text="${stat.testName}"></div>
+                                <div class="col-1 text-start d-none d-md-block"></div>
+                                <div class="col-md-8 col-sm-7 text-start"></div>
                                 <div class="col-md-3 col-sm-5 text-center d-flex justify-content-between">
-                                    <div style="width: 40px;" th:text="${stat.getCount()}"></div>
-                                    <div style="width: 100px;" th:text="${stat.getAvgProc()+'%'}"></div>
+                                    <div style="width: 40px;" ></div>
+                                    <div style="width: 100px;" ></div>
                                 </div>
                             </div>
                         </div>

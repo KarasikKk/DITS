@@ -49,13 +49,13 @@ public class AdminStatisticController {
         return "admin/user-statistic";
     }
 
-    @ResponseBody
-    @GetMapping("/getUserTestsStatistic")
-    public List<TestStatisticByUser> getUserStatistics(@RequestParam int id) {
-        User user = userService.getUserByUserId(id);
-        UserStatistics userStatistics = statisticService.getUserStatistics(user);
-        return statisticMapper.convertToUserStatisticDTO(userStatistics);
-    }
+//    @ResponseBody
+//    @GetMapping("/getUserTestsStatistic")
+//    public List<TestStatisticByUser> getUserStatistics(@RequestParam int id) {
+//        User user = userService.getUserByUserId(id);
+//        UserStatistics userStatistics = statisticService.getUserStatistics(user);
+//        return statisticMapper.convertToUserStatisticDTO(userStatistics);
+//    }
 
     @ResponseBody
     @GetMapping("/adminStatistic/removeStatistic/byId")

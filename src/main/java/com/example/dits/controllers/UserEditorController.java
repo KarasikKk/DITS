@@ -7,7 +7,6 @@ import com.example.dits.mapper.UserInfoMapper;
 import com.example.dits.service.RoleService;
 import com.example.dits.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +24,7 @@ public class UserEditorController {
     private final UserInfoMapper userInfoMapper;
 
     @Autowired
-    public UserEditorController(UserService userService, RoleService roleService, ModelMapper modelMapper, UserInfoMapper userInfoMapper) {
+    public UserEditorController(UserService userService, RoleService roleService, UserInfoMapper userInfoMapper) {
         passwordEncoder = new BCryptPasswordEncoder();
         this.userService = userService;
         this.roleService = roleService;

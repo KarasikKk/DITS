@@ -85,21 +85,25 @@ public class TestPageController {
         User user = (User) session.getAttribute("user");
         List<Statistic> statisticList = (List<Statistic>) session.getAttribute("statistics");
 
+        checkIfResultPage(questions, questionNumber, isCorrect, user, statisticList);
+
+        //int countOfRightAnswers = statisticService.calculateRightAnswers(statisticList);
+        statisticService.saveStatisticsToDB(statisticList);
+        //int percentOfRightAnswers = (int) answerService.countPercentsOfRightAnswers(countOfRightAnswers,questions.size());
+       // model.addAttribute("rightAnswers",countOfRightAnswers);
+        //model.addAttribute("countOfQuestions", questions.size());
+        //model.addAttribute("percentageComplete", percentOfRightAnswers);
+        model.addAttribute("title","Result");
+        return "user/resultPageFinal";
+    }
+
+    private void checkIfResultPage(List<Question> questions, int questionNumber, boolean isCorrect, User user, List<Statistic> statisticList) {
         if (!isResultPage(questionNumber, statisticList)){
             statisticList.add(Statistic.builder()
-                    .question(questions.get(questionNumber-1))
+                    .question(questions.get(questionNumber -1))
                     .user(user)
                     .correct(isCorrect).build());
         }
-
-        int countOfRightAnswers = statisticService.calculateRightAnswers(statisticList);
-        statisticService.saveStatisticsToDB(statisticList);
-        int percentOfRightAnswers = (int) answerService.countPercentsOfRightAnswers(countOfRightAnswers,questions.size());
-        model.addAttribute("rightAnswers",countOfRightAnswers);
-        model.addAttribute("countOfQuestions", questions.size());
-        model.addAttribute("percentageComplete", percentOfRightAnswers);
-        model.addAttribute("title","Result");
-        return "user/resultPageFinal";
     }
 
     private boolean isResultPage(int questionNumber, List<Statistic> statisticList) {

@@ -71,10 +71,10 @@ public class AnswerServiceImpl implements AnswerService {
         }
     }
 
-    @Override
-    public double countPercentsOfRightAnswers(double countOfRightAnswers, double questionSize) {
-        return Precision.round((countOfRightAnswers / questionSize) * 100, 0);
-    }
+//    @Override
+//    public double countPercentsOfRightAnswers(double countOfRightAnswers, double questionSize) {
+//        return Precision.round((countOfRightAnswers / questionSize) * 100, 0);
+//    }
 
     private List<Integer> getListOfIndexesOfRightAnswers(List<Answer> prevAnswer) {
         List<Integer> rightAnswers = new ArrayList<>();

@@ -46,7 +46,7 @@ public class SecurityController {
                 topicsWithQuestions.add(i);
             }
         }
-        session.setAttribute("user", user);
+          session.setAttribute("user", user);
         model.addAttribute("title","Testing");
         model.addAttribute("topicWithQuestions",topicsWithQuestions);
         return "user/chooseTest";

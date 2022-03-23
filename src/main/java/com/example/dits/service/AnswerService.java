@@ -15,6 +15,6 @@ public interface AnswerService {
     List<Answer> getAnswersByQuestion(Question question);
     List<Answer> getAnswersFromQuestionList(List<Question> questionList, int index);
     boolean isRightAnswer(List<Integer> answeredQuestion, List<Question> questionList, int questionNumber);
-    double countPercentsOfRightAnswers(double countOfRightAnswers, double questionSize);
+    //double countPercentsOfRightAnswers(double countOfRightAnswers, double questionSize);
 
 }
